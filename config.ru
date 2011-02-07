@@ -1,4 +1,4 @@
-run Proc.new do |env|
+run Proc.new{|env|
   status, headers, body = 200, {'Content-Type' => 'text/html'}, ''
   case env['PATH_INFO']
   when /^\/?$/
@@ -7,4 +7,4 @@ run Proc.new do |env|
     body = $~
   end
   [status,headers,body]
-end
+}
