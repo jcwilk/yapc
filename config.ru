@@ -4,7 +4,7 @@ run Proc.new{|env|
   when /^\/?$/
     body = "index"
   else
-    body = $~
+    body = env['PATH_INFO']
   end
   [status,headers,body]
 }
