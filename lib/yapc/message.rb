@@ -10,17 +10,18 @@ module Yapc
 %html
   %head
     %script{:src => "http://js.pusherapp.com/1.7/pusher.min.js"}
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"}
   %body
-    %form{:action => '/m', :method => 'POST'}
-      %input{:type => 'text', :name => 'text', :id => 'text'}
-      %input{:type => 'submit', :value => 'This is a test.'}
+    %input{:type => 'text', :name => 'text', :id => 'text-field'}
+    .messages
+      .message-start
     %script{:src => "/pusher.js"}
 EOF
     end
 
     def create
       Pusher['messages'].trigger 'message-create', :text => params[:text]
-      render params[:text].inspect+" sent!"
+      render params.inspect
     end
   end
 end
