@@ -5,7 +5,7 @@ myChannel.bind('message-create', function(thing) {
   if($('#msg-'+thing.ip_digest)[0]){
     $('#msg-'+thing.ip_digest).text(thing.text)
   }else{
-    $("<p id='"+'msg-'+thing.ip_digest+"'>"+thing.text+"</p>").insertAfter('#messages-start');
+    $("<p id='"+'msg-'+thing.ip_digest+"'>"+thing.ip_digest+': '+thing.text+"</p>").insertAfter('#messages-start');
   }
 });
 
