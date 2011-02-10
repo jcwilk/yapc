@@ -10,11 +10,11 @@ module Yapc
 %html
   %head
     %script{:src => "http://js.pusherapp.com/1.7/pusher.min.js"}
-    %script{:src => "/pusher.js"}
   %body
     %form{:action => '/m', :method => 'POST'}
       %input{:type => 'text', :name => 'text', :id => 'text'}
       %input{:type => 'submit', :value => 'This is a test.'}
+    %script{:src => "/pusher.js"}
 EOF
     end
 
