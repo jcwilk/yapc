@@ -1,4 +1,5 @@
 require 'yapc/utility'
+require 'digest/sha1'
 
 module Yapc
   class Message
@@ -14,13 +15,14 @@ module Yapc
   %body
     %input{:type => 'text', :name => 'text', :id => 'text-field'}
     .messages
-      .message-start
+      #messages-start
     %script{:src => "/pusher.js"}
 EOF
     end
 
     def create
-      Pusher['messages'].trigger 'message-create', :text => params[:text]
+      addr = env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR']
+      Pusher['messages'].trigger 'message-create', :text => params[:text], :ip_digest => Digest::SHA1.hexdigest(addr+'llerkt3040f0dago-0o')[0..10]
       render params.inspect
     end
   end
