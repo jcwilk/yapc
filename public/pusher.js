@@ -9,6 +9,6 @@ myChannel.bind('message-create', function(thing) {
   }
 });
 
-$('#text-field').keydown(function(e) {
+$('#text-field').keyup(function(e) {
   $.post('/m',$('#text-field').serialize());
 });
