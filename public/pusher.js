@@ -11,6 +11,23 @@ myChannel.bind('message-create', function(thing) {
   }
 });
 
+var syncInProgress = false
+var resyncNeeded = false
+
+var sync = function(){
+  if(!syncInProgress){
+    resyncNeeded = false;
+    $.ajax({
+      type: 'POST',
+      url: '/m',
+      data: $('#text-field').serialize(),
+      success: function(){syncInProgress=false; if(resyncNeeded){sync()}}
+    });
+  } else {
+    resyncNeeded = true;
+  }
+};
+
 $('#text-field').keyup(function(e) {
-  $.post('/m',$('#text-field').serialize());
+  sync();
 });
