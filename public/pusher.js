@@ -17,6 +17,7 @@ var resyncNeeded = false
 var sync = function(){
   if(!syncInProgress){
     resyncNeeded = false;
+    syncInProgress = true;
     $.ajax({
       type: 'POST',
       url: '/m',
