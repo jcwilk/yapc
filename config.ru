@@ -15,6 +15,9 @@ run Rack::Builder.new{
     run Yapc::Message
   end
   map '/d' do
-    run Proc.new{|e|[200,{'Content-Type' => 'text/plain'},[e.keys.sort.map{|k|k+": "+e[k].inspect}.join("\n")]]}
+    run Proc.new{|e|[200,{'Content-Type'=>'text/plain'},[e.keys.sort.map{|k|k+": "+e[k].inspect}.join("\n")]]}
+  end
+  map '/' do
+    run Proc.new{|e|[303,{'Content-Type'=>'text/plain','Location'=>'/m'},['Redirecting to messages app at /m...']]}
   end
 }
