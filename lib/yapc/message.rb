@@ -19,6 +19,7 @@ module Yapc
         ='-----------------------------------'
     %script{:src => "http://js.pusherapp.com/1.7/pusher.min.js"}
     %script{:src => "/pusher.js"}
+    %script{:type => "text/javascript"} initializeChat('text-field','messages-start','#{Yapc::KEY}');
 EOF
     end
 

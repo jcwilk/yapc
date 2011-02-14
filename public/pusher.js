@@ -1,4 +1,4 @@
-function initializeChat(inputId, startId){
+function initializeChat(inputId, startId, appId){
     function createSender(method, sequential){
         var sequence = 0;
         return function(text){
@@ -54,7 +54,7 @@ function initializeChat(inputId, startId){
     }
     monitorChatField(inputId);
 
-    var pusher = new Pusher('d5593d81364f0abee5b0');
+    var pusher = new Pusher(appId);
     var myChannel = pusher.subscribe('messages');
 
     var clientSequenceHash = {};
@@ -77,5 +77,3 @@ function initializeChat(inputId, startId){
         displayAfter(msg);
     })
 }
-
-initializeChat('text-field','messages-start');
