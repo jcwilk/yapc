@@ -7,6 +7,11 @@ $:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
 require 'yapc'
 
 use Rack::Static, :urls => %w(/pusher.js), :root => "public"
+use Rack::Session::Cookie, :key => 'rack.session',
+                               :domain => 'yapc.heroku.com',
+                               :path => '/',
+                               :expire_after => 2592000,
+                               :secret => 'sdf8gud89fgudfbxfgd'
 run Rack::Builder.new{
   map '/c' do
     run Yapc::Convo
