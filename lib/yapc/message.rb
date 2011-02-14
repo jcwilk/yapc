@@ -40,7 +40,7 @@ EOF
     end
 
     def ip_hash
-      Digest::SHA1.hexdigest((env['rack.session'] || env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0...6]
+      Digest::SHA1.hexdigest((env['rack.session'][:id] || env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR']).to_s+'llerkt3040f0dago-0o')[0...6]
     end
   end
 end
