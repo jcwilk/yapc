@@ -35,7 +35,7 @@ function initializeChat(inputId, startId){
         if(data.color){
             out+=" style='color:#"+data.color+"'";
         }
-        out+=">"+data.output+"</p>";
+        out+=">"+data.text+"</p>";
         return out
     }
 
