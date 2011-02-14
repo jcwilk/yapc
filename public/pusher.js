@@ -1,41 +1,30 @@
 function initializeChat(inputId, startId){
-    function createSender(method){
-        var syncInProgress = false;
-        var pendingText = false;
-        var recur = function(text){
-            if(!syncInProgress){
-                pendingText = false;
-                syncInProgress = true;
-                $.ajax({
-                    type: method,
-                    url: '/m',
-                    data: {text: text},
-                    success: function(){
-                        syncInProgress=false;
-                        if(pendingText){
-                            recur(pendingText)
-                        }
-                    }
-                });
-            } else {
-                pendingText = text;
+    function createSender(method, sequential){
+        var sequence = 0;
+        return function(text){
+            var data = {text: text};
+            if(sequential){
+                data['sequence'] = sequence;
+                sequence+= 1;
             }
+            $.ajax({
+                type: method,
+                url: '/m',
+                data: data
+            });
         }
-        return recur
     }
 
-    var sendMessage = createSender('POST');
-    var syncActiveText = createSender('PUT');
+    var sendMessage = createSender('POST',false);
+    var syncActiveText = createSender('PUT',true);
 
     function formatMessage(data){
         var out = "<p";
         if(data.id){
             out+=" id='"+data.id+"'";
         }
-        if(data.color){
-            out+=" style='color:#"+data.color+"'";
-        }
-        out+=">"+data.text+"</p>";
+        out+=" style='color: #"+data.ip_digest+"'";
+        out+=">"+data.ip_digest+': '+data.text+"</p>";
         return out
     }
 
@@ -68,19 +57,25 @@ function initializeChat(inputId, startId){
     var pusher = new Pusher('d5593d81364f0abee5b0');
     var myChannel = pusher.subscribe('messages');
 
+    var clientSequenceHash = {};
     myChannel.bind('message-update', function(msg) {
-      msg.color = msg.ip_digest;
-      msg.id = 'msg-'+msg.ip_digest;
-      if($('#'+msg.id)[0]){
-        var out = formatMessage(msg);
-        $('#'+activeId).replaceWith(out)
-      }else{
-        displayBefore(msg);
-      }
+        var lastSequence = clientSequenceHash[msg.ip_digest];
+        var currentSequence = parseInt(msg.sequence);
+        console.log(msg);
+        console.log(lastSequence);
+        if(!lastSequence || (lastSequence < currentSequence)) {
+            clientSequenceHash[msg.ip_digest] = currentSequence;
+            msg.id = 'msg-'+msg.ip_digest;
+            if($('#'+msg.id)[0]){
+                var out = formatMessage(msg);
+                $('#'+msg.id).replaceWith(out)
+            }else{
+                displayBefore(msg);
+            }
+        }
     });
 
     myChannel.bind('message-create', function(msg){
-        msg.color = msg.ip_digest;
         displayAfter(msg);
     })
 }

@@ -27,14 +27,14 @@ EOF
     end
 
     def update
-      Pusher['messages'].trigger 'message-update', :text => params[:text], :ip_digest => ip_hash
+      Pusher['messages'].trigger 'message-update', :text => params[:text], :ip_digest => ip_hash, :sequence => params[:sequence]
       render params.inspect
     end
 
     protected
 
     def ip_hash
-      Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0..6]
+      Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0...6]
     end
   end
 end
