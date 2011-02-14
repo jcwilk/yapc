@@ -36,7 +36,7 @@ EOF
 
     def escape(string)
       clean = CGI.escapeHTML(params[:text])
-      clean.gsub(/http[^ ]+/,"<a href='#{$1}'>#{$1}</a>")
+      clean.gsub(/http[^ ]+/,"<a href='#{$~}'>#{$~}</a>")
     end
 
     def ip_hash
