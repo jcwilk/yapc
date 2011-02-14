@@ -1,5 +1,6 @@
 require 'yapc/utility'
 require 'digest/sha1'
+require 'cgi'
 
 module Yapc
   class Message
@@ -22,16 +23,21 @@ EOF
     end
 
     def create
-      Pusher['messages'].trigger 'message-create', :text => params[:text], :ip_digest => ip_hash
+      Pusher['messages'].trigger 'message-create', :text => escape(params[:text]), :ip_digest => ip_hash
       render params.inspect
     end
 
     def update
-      Pusher['messages'].trigger 'message-update', :text => params[:text], :ip_digest => ip_hash, :sequence => params[:sequence]
+      Pusher['messages'].trigger 'message-update', :text => escape(params[:text]), :ip_digest => ip_hash, :sequence => params[:sequence]
       render params.inspect
     end
 
     protected
+
+    def escape(string)
+      clean = CGI.escapeHTML(params[:text])
+      clean.gsub(/http[^ ]+/,"<a href='#{$1}'>#{$1}</a>")
+    end
 
     def ip_hash
       Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0...6]
