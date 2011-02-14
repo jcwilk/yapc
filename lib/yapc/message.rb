@@ -23,23 +23,23 @@ EOF
     end
 
     def create
-      Pusher['messages'].trigger 'message-create', :text => escape(params[:text]), :ip_digest => ip_hash
+      Pusher['messages'].trigger 'message-create', :text => escape_with_links(params[:text]), :id_hash => id_hash
       render params.inspect
     end
 
     def update
-      Pusher['messages'].trigger 'message-update', :text => escape(params[:text]), :ip_digest => ip_hash, :sequence => params[:sequence]
+      Pusher['messages'].trigger 'message-update', :text => escape_with_links(params[:text]), :id_hash => id_hash, :sequence => params[:sequence]
       render params.inspect
     end
 
     protected
 
-    def escape(string)
+    def escape_with_links(string)
       clean = CGI.escapeHTML(params[:text])
       clean.gsub(/(http[^ ]+)/,'<a href="\1" target="_blank">\1</a>')
     end
 
-    def ip_hash
+    def id_hash
       Digest::SHA1.hexdigest((env['rack.session'][:id] || env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR']).to_s+'llerkt3040f0dago-0o')[0...6]
     end
   end

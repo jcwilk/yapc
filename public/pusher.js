@@ -23,8 +23,8 @@ function initializeChat(inputId, startId){
         if(data.id){
             out+=" id='"+data.id+"'";
         }
-        out+=" style='color: #"+data.ip_digest+"'";
-        out+=">"+data.ip_digest+': '+data.text+"</p>";
+        out+=" style='color: #"+data.id_hash+"'";
+        out+=">"+data.id_hash+': '+data.text+"</p>";
         return out
     }
 
@@ -59,11 +59,11 @@ function initializeChat(inputId, startId){
 
     var clientSequenceHash = {};
     myChannel.bind('message-update', function(msg) {
-        var lastSequence = clientSequenceHash[msg.ip_digest];
+        var lastSequence = clientSequenceHash[msg.id_hash];
         var currentSequence = parseInt(msg.sequence);
         if(!lastSequence || (lastSequence < currentSequence)) {
-            clientSequenceHash[msg.ip_digest] = currentSequence;
-            msg.id = 'msg-'+msg.ip_digest;
+            clientSequenceHash[msg.id_hash] = currentSequence;
+            msg.id = 'msg-'+msg.id_hash;
             if($('#'+msg.id)[0]){
                 var out = formatMessage(msg);
                 $('#'+msg.id).replaceWith(out)
