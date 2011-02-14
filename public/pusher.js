@@ -52,28 +52,28 @@ function initializeChat(inputId, startId, appId){
             }
         })
     }
-    monitorChatField(inputId);
+
+    function messageUpdateHandler(){
+        var clientSequenceHash = {};
+        return function(msg) {
+            var lastSequence = clientSequenceHash[msg.id_hash];
+            var currentSequence = parseInt(msg.sequence);
+            if(!lastSequence || (lastSequence < currentSequence)) {
+                clientSequenceHash[msg.id_hash] = currentSequence;
+                msg.id = 'msg-'+msg.id_hash;
+                if($('#'+msg.id)[0]){
+                    var out = formatMessage(msg);
+                    $('#'+msg.id).replaceWith(out)
+                }else{
+                    displayBefore(msg);
+                }
+            }
+        }
+    }
 
     var pusher = new Pusher(appId);
     var myChannel = pusher.subscribe('messages');
-
-    var clientSequenceHash = {};
-    myChannel.bind('message-update', function(msg) {
-        var lastSequence = clientSequenceHash[msg.id_hash];
-        var currentSequence = parseInt(msg.sequence);
-        if(!lastSequence || (lastSequence < currentSequence)) {
-            clientSequenceHash[msg.id_hash] = currentSequence;
-            msg.id = 'msg-'+msg.id_hash;
-            if($('#'+msg.id)[0]){
-                var out = formatMessage(msg);
-                $('#'+msg.id).replaceWith(out)
-            }else{
-                displayBefore(msg);
-            }
-        }
-    });
-
-    myChannel.bind('message-create', function(msg){
-        displayAfter(msg);
-    })
+    myChannel.bind('message-update', messageUpdateHandler());
+    myChannel.bind('message-create', function(msg){ displayAfter(msg); });
+    monitorChatField(inputId);
 }
