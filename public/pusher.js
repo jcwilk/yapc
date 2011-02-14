@@ -27,12 +27,24 @@ function initializeChat(inputId, startId){
     var sendMessage = createSender('POST');
     var syncActiveText = createSender('PUT');
 
-    function displayAfter(output){
-        $(output).insertAfter('#'+startId)
+    function formatMessage(data){
+        var out = "<p";
+        if(data.id){
+            out+=" id='"+data.id+"'";
+        }
+        if(data.color){
+            out+=" style='color:#"+data.color+"'";
+        }
+        out+=">"+data.output+"</p>";
+        return out
     }
 
-    function displayBefore(output){
-        $(output).insertBefore('#'+startId)
+    function displayAfter(data){
+        $(formatMessage(data)).insertAfter('#'+startId)
+    }
+
+    function displayBefore(data){
+        $(formatMessage(data)).insertBefore('#'+startId)
     }
 
     function monitorChatField(_fieldId){
@@ -57,18 +69,19 @@ function initializeChat(inputId, startId){
     var myChannel = pusher.subscribe('messages');
 
     myChannel.bind('message-update', function(msg) {
-      var activeId='msg-'+msg.ip_digest
-      var out="<p id='"+activeId+"'>"+msg.ip_digest+': '+msg.text+"</p>";
-      if($('#'+activeId)[0]){
+      msg.color = msg.ip_digest;
+      msg.id = 'msg-'+msg.ip_digest;
+      if($('#'+msg.id)[0]){
+        var out = formatMessage(msg);
         $('#'+activeId).replaceWith(out)
       }else{
-        displayBefore(out);
+        displayBefore(msg);
       }
     });
 
     myChannel.bind('message-create', function(msg){
-        var out="<p>"+msg.ip_digest+': '+msg.text+"</p>";
-        displayAfter(out);
+        msg.color = msg.ip_digest;
+        displayAfter(msg);
     })
 }
 

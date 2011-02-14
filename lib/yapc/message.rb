@@ -34,7 +34,7 @@ EOF
     protected
 
     def ip_hash
-      Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0..10]
+      Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0..6]
     end
   end
 end
