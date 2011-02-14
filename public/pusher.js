@@ -61,8 +61,6 @@ function initializeChat(inputId, startId){
     myChannel.bind('message-update', function(msg) {
         var lastSequence = clientSequenceHash[msg.ip_digest];
         var currentSequence = parseInt(msg.sequence);
-        console.log(msg);
-        console.log(lastSequence);
         if(!lastSequence || (lastSequence < currentSequence)) {
             clientSequenceHash[msg.ip_digest] = currentSequence;
             msg.id = 'msg-'+msg.ip_digest;
