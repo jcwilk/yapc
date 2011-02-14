@@ -9,12 +9,12 @@ function initializeChat(inputId, startId){
                 var recur = this;
                 $.ajax({
                     type: method,
-                    url: '/d',
+                    url: '/m',
                     data: {text: text},
                     success: function(){
                         syncInProgress=false;
                         if(pendingText){
-                            recur(pendingText)
+                            //recur(pendingText)
                         }
                     }
                 });
@@ -42,6 +42,7 @@ function initializeChat(inputId, startId){
                 }
                 if(field.val() != lastVal){
                     syncActiveText(field.val());
+                    lastVal = field.val();
                 }
             }
         })
