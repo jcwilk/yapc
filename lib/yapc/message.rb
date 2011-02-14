@@ -15,6 +15,7 @@ module Yapc
     %input{:type => 'text', :name => 'text', :id => 'text-field'}
     .messages
       #messages-start
+        ----------------
     %script{:src => "http://js.pusherapp.com/1.7/pusher.min.js"}
     %script{:src => "/pusher.js"}
 EOF

@@ -27,8 +27,12 @@ function initializeChat(inputId, startId){
     var sendMessage = createSender('POST');
     var syncActiveText = createSender('PUT');
 
-    function display(output){
+    function displayAfter(output){
         $(output).insertAfter('#'+startId)
+    }
+
+    function displayBefore(output){
+        $(output).insertBefore('#'+startId)
     }
 
     function monitorChatField(_fieldId){
@@ -58,13 +62,13 @@ function initializeChat(inputId, startId){
       if($('#'+activeId)[0]){
         $('#'+activeId).replaceWith(out)
       }else{
-        display(out);
+        displayBefore(out);
       }
     });
 
     myChannel.bind('message-create', function(msg){
         var out="<p>"+msg.ip_digest+': '+msg.text+"</p>";
-        display(out);
+        displayAfter(out);
     })
 }
 
