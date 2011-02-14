@@ -2,11 +2,10 @@ function initializeChat(inputId, startId){
     function createSender(method){
         var syncInProgress = false;
         var pendingText = false;
-        return function(text){
+        var recur = function(text){
             if(!syncInProgress){
                 pendingText = false;
                 syncInProgress = true;
-                var recur = this;
                 $.ajax({
                     type: method,
                     url: '/m',
@@ -14,7 +13,7 @@ function initializeChat(inputId, startId){
                     success: function(){
                         syncInProgress=false;
                         if(pendingText){
-                            //recur(pendingText)
+                            recur(pendingText)
                         }
                     }
                 });
@@ -22,6 +21,7 @@ function initializeChat(inputId, startId){
                 pendingText = text;
             }
         }
+        return recur
     }
 
     var sendMessage = createSender('POST');
