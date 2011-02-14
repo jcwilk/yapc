@@ -37,6 +37,8 @@ module Yapc
             show
           when 'POST'
             create
+          when 'PUT'
+            update
           else
             not_found
         end

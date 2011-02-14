@@ -21,9 +21,19 @@ EOF
     end
 
     def create
-      addr = env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR']
-      Pusher['messages'].trigger 'message-create', :text => params[:text], :ip_digest => Digest::SHA1.hexdigest(addr+'llerkt3040f0dago-0o')[0..10]
+      Pusher['messages'].trigger 'message-create', :text => params[:text], :ip_digest => ip_hash
       render params.inspect
+    end
+
+    def update
+      Pusher['messages'].trigger 'message-update', :text => params[:text], :ip_digest => ip_hash
+      render params.inspect
+    end
+
+    protected
+
+    def ip_hash
+      Digest::SHA1.hexdigest((env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])+'llerkt3040f0dago-0o')[0..10]
     end
   end
 end

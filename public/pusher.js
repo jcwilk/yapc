@@ -1,55 +1,70 @@
-var pusher = new Pusher('d5593d81364f0abee5b0');
-var myChannel = pusher.subscribe('messages');
-
-myChannel.bind('message-create', function(thing) {
-  id='msg-'+thing.ip_digest
-  msg="<p id='"+id+"'>"+thing.ip_digest+': '+thing.text+"</p>";
-  if($('#'+id)[0]){
-    $('#'+id).replaceWith(msg)
-  }else{
-    $(msg).insertAfter('#messages-start');
-  }
-});
-
-var syncInProgress = false
-var resyncNeeded = false
-
-var sync = function(){
-  if(!syncInProgress){
-    resyncNeeded = false;
-    syncInProgress = true;
-    $.ajax({
-      type: 'POST',
-      url: '/m',
-      data: $('#text-field').serialize(),
-      success: function(){syncInProgress=false; if(resyncNeeded){sync()}}
-    });
-  } else {
-    resyncNeeded = true;
-  }
-};
-
-function ChatFieldHandler(_fieldId){
-
-    this.fieldId = _fieldId;
-    this.field = $('#'+this.fieldId);
-    this.val = this.field.val;
-
-    this.handleKeyup = function(e){
-        if(e.keyCode == '13'){
-            val = this.val();
-            this.val('');
-        }else{
-            sync();
+function initializeChat(inputId, startId){
+    function createSender(method){
+        var syncInProgress = false;
+        var pendingText = false;
+        return function(text){
+            if(!syncInProgress){
+                pendingText = false;
+                syncInProgress = true;
+                var recur = this;
+                $.ajax({
+                    type: method,
+                    url: '/d',
+                    data: {text: text},
+                    success: function(){
+                        syncInProgress=false;
+                        if(pendingText){
+                            recur(pendingText)
+                        }
+                    }
+                });
+            } else {
+                pendingText = text;
+            }
         }
-    };
+    }
 
-    this.field.keyup(this.handleKeyup)
+    var sendMessage = createSender('POST');
+    var syncActiveText = createSender('PUT');
+
+    function display(output){
+        $(output).insertAfter('#'+startId)
+    }
+
+    function monitorChatField(_fieldId){
+        var field = $('#'+_fieldId);
+        var lastVal = field.val();
+        field.bind({
+            keyup: function(e){
+                if(e.keyCode == '13'){
+                    sendMessage(field.val());
+                    field.val('');
+                }
+                if(field.val() != lastVal){
+                    syncActiveText(field.val());
+                }
+            }
+        })
+    }
+    monitorChatField(inputId);
+
+    var pusher = new Pusher('d5593d81364f0abee5b0');
+    var myChannel = pusher.subscribe('messages');
+
+    myChannel.bind('message-update', function(msg) {
+      var activeId='msg-'+msg.ip_digest
+      var out="<p id='"+activeId+"'>"+msg.ip_digest+': '+msg.text+"</p>";
+      if($('#'+activeId)[0]){
+        $('#'+activeId).replaceWith(out)
+      }else{
+        display(out);
+      }
+    });
+
+    myChannel.bind('message-create', function(msg){
+        var out="<p>"+msg.ip_digest+': '+msg.text+"</p>";
+        display(out);
+    })
 }
 
-var chat = new ChatFieldHandler('text-field');
-
-//$('#text-field').keyup(function(e) {
-//  alert(e.keyCode);
-  //$(e.keyCode).insertAfter('#messages-start');
-//});
+initializeChat('text-field','messages-start');
