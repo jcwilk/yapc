@@ -26,8 +26,12 @@ module Yapc
       {
         :text => escape_with_links(params[:text]),
         :id_hash => id_hash,
-        :name => session[:name]
+        :name => wikified_name
       }.merge(extra)
+    end
+
+    def wikified_name
+      "<a href='http://en.wikipedia.org/wiki/#{session[:name].underscore}'>#{session[:name]}</a>"
     end
 
     def escape_with_links(string)
