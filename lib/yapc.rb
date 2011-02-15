@@ -1,10 +1,10 @@
-require 'psych'
+require 'yaml'
 
 module Yapc
   ROOT = File.join(File.dirname(__FILE__),'yapc')
 
   class CookieRandomizer
-    NAME_HASH = Psych.load_file(File.join ROOT, 'celebs.yml')
+    NAME_HASH = YAML.load_file(File.join ROOT, 'celebs.yml')
 
     def initialize(app)
       @app = app
