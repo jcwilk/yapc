@@ -31,7 +31,7 @@ module Yapc
     end
 
     def wikified_name
-      "<a href='http://en.wikipedia.org/wiki/#{session[:name].underscore}'>#{session[:name]}</a>"
+      "<a href='http://en.wikipedia.org/wiki/Special:Search/#{session[:name].underscore}' target='_blank'>#{session[:name]}</a>"
     end
 
     def escape_with_links(string)
