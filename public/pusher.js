@@ -24,7 +24,7 @@ function initializeChat(inputId, startId, appId){
             out+=" id='"+data.id+"'";
         }
         out+=" style='color: #"+data.id_hash+"'";
-        out+=">"+data.id_hash+': '+data.text+"</p>";
+        out+=">"+data.name+': '+data.text+"</p>";
         return out
     }
 

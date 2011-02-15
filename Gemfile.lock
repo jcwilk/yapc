@@ -4,6 +4,7 @@ GEM
     activesupport (3.0.4)
     crack (0.1.8)
     daemons (1.0.10)
+    dalli (1.0.2)
     gem_plugin (0.2.3)
     haml (3.0.25)
     i18n (0.5.0)
@@ -29,6 +30,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  dalli
   haml
   i18n
   mongrel (= 1.2.0.pre2)

@@ -15,7 +15,13 @@ module Yapc
       end
 
       def haml(code)
-        Haml::Engine.new(code).render
+        if code.is_a?(Symbol)
+          cache.fetch(code) do
+            haml File.read(File.join(ROOT,"views/#{code}.haml"))
+          end
+        else
+          Haml::Engine.new(code).render
+        end
       end
 
       def not_found
@@ -28,6 +34,14 @@ module Yapc
 
       def params
         request.params.with_indifferent_access
+      end
+
+      def cache
+        env['yapc.cache']
+      end
+
+      def session
+        env['rack.session']
       end
 
       def initialize(_env)

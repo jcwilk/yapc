@@ -1,3 +1,4 @@
+puts 'Annnnd...' if ENV['RACK_ENV'] == 'development'
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default)
@@ -14,6 +15,7 @@ use Rack::Session::Cookie, :key => 'rack.session',
                                :secret => 'sdf8gud89fgudfbxfgd'
 
 use Yapc::CookieRandomizer
+use Yapc::CacheManager
 map '/c' do
   run Yapc::Convo
 end
@@ -26,3 +28,4 @@ end
 map '/' do
   run Proc.new{|e|[303,{'Content-Type'=>'text/plain','Location'=>'/m'},['Redirecting to messages app at /m...']]}
 end
+puts 'go!' if ENV['RACK_ENV'] == 'development'
