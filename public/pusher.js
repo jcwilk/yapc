@@ -71,9 +71,22 @@ function initializeChat(inputId, startId, appId){
         }
     }
 
+    function messageCreateHandler(){
+        return function(msg) {
+            displayAfter(msg);
+            $.titleAlert("New Message!", {
+                requireBlur:false,
+                stopOnFocus:true,
+                stopOnMouseMove:true,
+                duration:10000,
+                interval:1000
+            });
+        }
+    }
+
     var pusher = new Pusher(appId);
     var myChannel = pusher.subscribe('messages');
     myChannel.bind('message-update', messageUpdateHandler());
-    myChannel.bind('message-create', function(msg){ displayAfter(msg); });
+    myChannel.bind('message-create', messageCreateHandler());
     monitorChatField(inputId);
 }

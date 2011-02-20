@@ -7,7 +7,7 @@ require 'active_support/core_ext'
 $:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
 require 'yapc'
 
-use Rack::Static, :urls => %w(/pusher.js), :root => "public"
+use Rack::Static, :urls => %w(/pusher.js /jquery.titlealert.min.js), :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
                                :domain => '.yapc.heroku.com',
                                :path => '/',
