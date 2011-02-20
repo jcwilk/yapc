@@ -1,10 +1,10 @@
 require 'yaml'
 
 module Yapc
-  ROOT = File.join(File.dirname(__FILE__),'yapc')
+  YAPC_ROOT = File.join(File.dirname(__FILE__),'yapc')
 
   class CookieRandomizer
-    NAME_HASH = YAML.load_file(File.join ROOT, 'celebs.yml')
+    NAME_HASH = YAML.load_file(File.join YAPC_ROOT, 'celebs.yml')
 
     def initialize(app)
       @app = app
@@ -14,25 +14,6 @@ module Yapc
       env['rack.session'][:id] ||= rand.to_s
       env['rack.session'][:name] ||= NAME_HASH.keys[(rand*NAME_HASH.size).to_i]
       @app.call(env)
-    end
-  end
-
-  class CacheManager
-    def initialize(app)
-      @app = app
-    end
-
-    def call(env)
-      env['yapc.cache'] = ENV['RACK_ENV'] == 'production' ? Dalli::Client.new('localhost:11211') : self
-      @app.call(env)
-    end
-
-    def method_missing(*args)
-      if block_given?
-        yield
-      else
-        nil
-      end
     end
   end
 

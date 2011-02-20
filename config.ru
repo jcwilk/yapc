@@ -6,6 +6,7 @@ require 'active_support/core_ext'
 
 $:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
 require 'yapc'
+require 'cache_manager'
 
 use Rack::Static, :urls => %w(/pusher.js /jquery.titlealert.min.js), :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
@@ -15,7 +16,7 @@ use Rack::Session::Cookie, :key => 'rack.session',
                                :secret => 'sdf8gud89fgudfbxfgd'
 
 use Yapc::CookieRandomizer
-use Yapc::CacheManager
+use CacheManager::Middleware
 map '/c' do
   run Yapc::Convo
 end
@@ -27,5 +28,8 @@ map '/d' do
 end
 map '/' do
   run Proc.new{|e|[303,{'Content-Type'=>'text/plain','Location'=>'/m'},['Redirecting to messages app at /m...']]}
+end
+map '/flush_cache' do
+  run CacheManager::BlowUp
 end
 puts 'go!' if ENV['RACK_ENV'] == 'development'

@@ -17,7 +17,7 @@ module Yapc
       def haml(code)
         if code.is_a?(Symbol)
           cache.fetch(code) do
-            haml File.read(File.join(ROOT,"views/#{code}.haml"))
+            haml File.read(File.join(YAPC_ROOT,"views/#{code}.haml"))
           end
         else
           Haml::Engine.new(code).render
@@ -37,7 +37,7 @@ module Yapc
       end
 
       def cache
-        env['yapc.cache']
+        env[CacheManager::MEMCACHE_KEY]
       end
 
       def session
