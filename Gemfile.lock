@@ -3,16 +3,11 @@ GEM
   specs:
     activesupport (3.0.4)
     crack (0.1.8)
-    daemons (1.0.10)
     dalli (1.0.2)
-    gem_plugin (0.2.3)
     haml (3.0.25)
     i18n (0.5.0)
     json (1.4.6)
     mime-types (1.16)
-    mongrel (1.2.0.pre2)
-      daemons (~> 1.0.10)
-      gem_plugin (~> 0.2.3)
     pusher (0.7.0)
       crack (~> 0.1.0)
       json (~> 1.4.0)
@@ -33,7 +28,6 @@ DEPENDENCIES
   dalli
   haml
   i18n
-  mongrel (= 1.2.0.pre2)
   pusher
   rack
   rest-client
