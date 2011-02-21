@@ -10,7 +10,7 @@ require 'cache_manager'
 
 use Rack::Static, :urls => %w(/pusher.js /jquery.titlealert.min.js), :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
-                               :domain => '.yapc.duostack.com',
+                               :domain => '.yapc.duostack.net',
                                :path => '/',
                                :expire_after => 2592000,
                                :secret => 'sdf8gud89fgudfbxfgd'
