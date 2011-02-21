@@ -8,6 +8,6 @@
     .messages
       #messages-start
         ='-----------------------------------'
-    %script{:src => "http://localhost:3000/push.js"}
+    %script{:src => "http://pushserver.duostack.com/push.js"}
     %script{:src => "/pusher.js"}
     %script{:type => "text/javascript"}= "initializeChat('text-field','messages-start','#{Yapc::KEY}');"
