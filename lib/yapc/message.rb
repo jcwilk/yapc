@@ -11,22 +11,28 @@ module Yapc
     end
 
     def create
-      Pusher['messages'].trigger 'message-create', message_data
+      send_data 'message-create', message_data
       render params.inspect
     end
 
     def update
-      Pusher['messages'].trigger 'message-update', message_data(:sequence => params[:sequence])
+      send_data 'message-update', message_data
       render params.inspect
     end
 
     protected
 
+    def send_data(channel, data)
+      #Pusher['messages'].trigger channel, data
+      RestClient.post "http://localhost:3000/m/#{channel}.json", data.to_json, :content_type => :json, :accept => :json
+    end
+
     def message_data(extra = {})
       {
         :text => escape_with_links(params[:text]),
         :id_hash => id_hash,
-        :name => wikified_name
+        :name => wikified_name,
+        :sequence => params[:sequence]
       }.merge(extra)
     end
 

@@ -38,17 +38,17 @@ function initializeChat(inputId, startId, appId){
 
     function monitorChatField(_fieldId){
         var field = $('#'+_fieldId);
-        var lastVal = field.val();
+        //var lastVal = field.val();
         field.bind({
             keyup: function(e){
                 if(e.keyCode == '13'){
                     sendMessage(field.val());
                     field.val('');
                 }
-                if(field.val() != lastVal){
-                    syncActiveText(field.val());
-                    lastVal = field.val();
-                }
+//                if(field.val() != lastVal){
+//                    syncActiveText(field.val());
+//                    lastVal = field.val();
+//                }
             }
         })
     }
@@ -72,21 +72,39 @@ function initializeChat(inputId, startId, appId){
     }
 
     function messageCreateHandler(){
-        return function(msg) {
-            displayAfter(msg);
+        function handleMessage(msg){
+            console.log(msg);
+            displayAfter(msg)
+        }
+
+        function notify(){
             $.titleAlert("New Message!", {
                 requireBlur:false,
                 stopOnFocus:true,
                 stopOnMouseMove:true,
                 duration:10000,
                 interval:1000
-            });
+            })
         }
+
+        function consumeData(data){
+            console.log(data);
+            if(data.length){
+                for(var i in data) handleMessage(data[i])
+            } else {
+                handleMessage(data)
+            }
+            notify()
+        }
+
+        return consumeData
     }
 
-    var pusher = new Pusher(appId);
-    var myChannel = pusher.subscribe('messages');
-    myChannel.bind('message-update', messageUpdateHandler());
-    myChannel.bind('message-create', messageCreateHandler());
+    //var pusher = new Pusher(appId);
+    //var myChannel = pusher.subscribe('messages');
+    //NodePush.bind('message-update', messageUpdateHandler());
+    //NodePush.setHost('localhost:3000');
+    NodePush.bind('message-create', messageCreateHandler());
     monitorChatField(inputId);
+    console.log('listening...')
 }
