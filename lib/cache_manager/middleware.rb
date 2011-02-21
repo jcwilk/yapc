@@ -6,13 +6,12 @@ module CacheManager
 
     def client
       @client ||= begin
-        if ENV['RACK_ENV'] == 'production'
-          Dalli::Client.new('localhost:11211').tap(&:stats) #stats so it'll trigger a network error if there's no memcached running
+        c=Dalli::Client.new('localhost:11211')
+        if c.stats.values.any?
+          c
         else
           Faker.new
         end
-      rescue Dalli::NetworkError
-        Faker.new
       end
     end
 
