@@ -8,7 +8,7 @@ $:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
 require 'yapc'
 require 'cache_manager'
 
-use Rack::Static, :urls => %w(/pusher.js /jquery.titlealert.min.js), :root => "public"
+use Rack::Static, :urls => Dir.entries(::File.join(::File.dirname(__FILE__),'public')).select{|f| f =~ /[.]js$/}.map{|f|'/'+f}, :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
                                :domain => '.yapc.duostack.net',
                                :path => '/',
