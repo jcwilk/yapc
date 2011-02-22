@@ -8,6 +8,6 @@
     .messages
       #messages-start
         ='-----------------------------------'
-    %script{:src => "http://#{PUSH_APP_HOST}/push.js"}
+    %script{:src => "http://#{Yapc::PUSH_APP_HOST}/push.js"}
     %script{:src => "/pusher.js"}
-    %script{:type => "text/javascript"}= "initializeChat('text-field','messages-start','#{PUSH_APP_HOST}');"
+    %script{:type => "text/javascript"}= "initializeChat('text-field','messages-start','#{Yapc::PUSH_APP_HOST}');"
