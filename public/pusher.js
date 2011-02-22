@@ -55,7 +55,7 @@ function initializeChat(inputId, startId, hostname){
 
     function messageUpdateHandler(){
         function handleMessage(msg) {
-            console.log('going to '+msg.sequence);
+            //console.log('going to '+msg.sequence);
             msg.id = 'msg-'+msg.id_hash;
             if($('#'+msg.id)[0]){
                 var out = formatMessage(msg);
@@ -80,7 +80,7 @@ function initializeChat(inputId, startId, hostname){
             }
 
             consumeNext(data);
-            console.log('consumed down to: '+JSON.stringify(mostRecent));
+            //console.log('consumed down to: '+JSON.stringify(mostRecent));
             for(var i in mostRecent) handleMessage(mostRecent[i])
         }
 
@@ -120,5 +120,5 @@ function initializeChat(inputId, startId, hostname){
     NodePush.bind('message-update', messageUpdateHandler());
     NodePush.bind('message-create', messageCreateHandler());
     monitorChatField(inputId);
-    console.log('listening...')
+    //console.log('listening...')
 }
