@@ -24,7 +24,7 @@ module Yapc
 
     def send_data(channel, data)
       #Pusher['messages'].trigger channel, data
-      RestClient.post "http://localhost:3000/m/#{channel}.json", data.to_json, :content_type => :json, :accept => :json
+      RestClient.post "http://#{PUSH_APP_HOST}/m/#{channel}.json", data.to_json, :content_type => :json, :accept => :json
     end
 
     def message_data(extra = {})

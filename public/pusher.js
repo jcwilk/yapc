@@ -1,4 +1,4 @@
-function initializeChat(inputId, startId, appId){
+function initializeChat(inputId, startId, hostname){
     function createSender(method, sequential){
         var sequence = 0;
         return function(text){
@@ -103,7 +103,7 @@ function initializeChat(inputId, startId, appId){
     //var pusher = new Pusher(appId);
     //var myChannel = pusher.subscribe('messages');
     //NodePush.bind('message-update', messageUpdateHandler());
-    //NodePush.setHost('localhost:3000');
+    NodePush.setHost(hostname);
     NodePush.bind('message-create', messageCreateHandler());
     monitorChatField(inputId);
     console.log('listening...')
