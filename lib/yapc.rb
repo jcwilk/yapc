@@ -2,7 +2,7 @@ require 'yaml'
 
 module Yapc
   YAPC_ROOT = File.join(File.dirname(__FILE__),'yapc')
-  PUSH_APP_HOST = 'pushserver.duostack.net'
+  PUSH_APP_HOST = ENV['RACK_ENV'] == 'production' ? 'pushserver.duostack.net' : 'development.pushserver.duostack.net:3000'
 
   class CookieRandomizer
     NAME_HASH = YAML.load_file(File.join YAPC_ROOT, 'celebs.yml')

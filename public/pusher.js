@@ -38,42 +38,57 @@ function initializeChat(inputId, startId, hostname){
 
     function monitorChatField(_fieldId){
         var field = $('#'+_fieldId);
-        //var lastVal = field.val();
+        var lastVal = field.val();
         field.bind({
             keyup: function(e){
                 if(e.keyCode == '13'){
                     sendMessage(field.val());
                     field.val('');
                 }
-//                if(field.val() != lastVal){
-//                    syncActiveText(field.val());
-//                    lastVal = field.val();
-//                }
+                if(field.val() != lastVal){
+                    syncActiveText(field.val());
+                    lastVal = field.val();
+                }
             }
         })
     }
 
     function messageUpdateHandler(){
-        var clientSequenceHash = {};
-        return function(msg) {
-            var lastSequence = clientSequenceHash[msg.id_hash];
-            var currentSequence = parseInt(msg.sequence);
-            if(!lastSequence || (lastSequence < currentSequence)) {
-                clientSequenceHash[msg.id_hash] = currentSequence;
-                msg.id = 'msg-'+msg.id_hash;
-                if($('#'+msg.id)[0]){
-                    var out = formatMessage(msg);
-                    $('#'+msg.id).replaceWith(out)
-                }else{
-                    displayBefore(msg);
-                }
+        function handleMessage(msg) {
+            console.log('going to '+msg.sequence);
+            msg.id = 'msg-'+msg.id_hash;
+            if($('#'+msg.id)[0]){
+                var out = formatMessage(msg);
+                $('#'+msg.id).replaceWith(out)
+            }else{
+                displayBefore(msg);
             }
         }
+
+        function consumeData(data){
+            var mostRecent = {};
+            //console.log(data);
+
+            function consumeNext(data){
+                if(data.length){
+                    for(var i in data) consumeNext(data[i])
+                } else {
+                    data.sequence = parseInt(data.sequence);
+                    var competition = mostRecent[data.id_hash];
+                    if(competition === undefined || competition.sequence < data.sequence) mostRecent[data.id_hash] = data;
+                }
+            }
+
+            consumeNext(data);
+            console.log('consumed down to: '+JSON.stringify(mostRecent));
+            for(var i in mostRecent) handleMessage(mostRecent[i])
+        }
+
+        return consumeData
     }
 
     function messageCreateHandler(){
         function handleMessage(msg){
-            console.log(msg);
             displayAfter(msg)
         }
 
@@ -88,9 +103,8 @@ function initializeChat(inputId, startId, hostname){
         }
 
         function consumeData(data){
-            console.log(data);
             if(data.length){
-                for(var i in data) handleMessage(data[i])
+                for(var i in data) consumeData(data[i])
             } else {
                 handleMessage(data)
             }
@@ -102,8 +116,8 @@ function initializeChat(inputId, startId, hostname){
 
     //var pusher = new Pusher(appId);
     //var myChannel = pusher.subscribe('messages');
-    //NodePush.bind('message-update', messageUpdateHandler());
     NodePush.setHost(hostname);
+    NodePush.bind('message-update', messageUpdateHandler());
     NodePush.bind('message-create', messageCreateHandler());
     monitorChatField(inputId);
     console.log('listening...')
