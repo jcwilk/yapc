@@ -18,16 +18,6 @@ module Yapc
     end
   end
 
-  APP_ID, KEY, SECRET = if ENV['RACK_ENV'] == 'production'
-      ['4085','88cbcdcb7cc0c9129051','6e9209f10b89f05f3047']
-    else
-      ['4086','c0025d97c7bdc1b9ce17','9054bd539770daee4b46']
-    end
+  autoload :Message, 'yapc/message'
+  autoload :Convo, 'yapc/convo'
 end
-
-require 'yapc/message'
-require 'yapc/convo'
-
-Pusher.app_id = Yapc::APP_ID
-Pusher.key    = Yapc::KEY
-Pusher.secret = Yapc::SECRET

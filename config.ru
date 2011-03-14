@@ -2,13 +2,14 @@ puts 'Annnnd...' if ENV['RACK_ENV'] == 'development'
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default)
+Bundler.require(:development) if ENV['RACK_ENV'] == 'development'
 require 'active_support/core_ext'
 
 $:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
 require 'yapc'
 require 'cache_manager'
 
-use Rack::Static, :urls => Dir.entries(::File.join(::File.dirname(__FILE__),'public')).select{|f| f =~ /[.]js$/}.map{|f|'/'+f}, :root => "public"
+use Rack::Static, :urls => ['/javascripts','/stylesheets'], :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
                                :domain => '.yapc.duostack.net',
                                :path => '/',
