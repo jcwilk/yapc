@@ -6,11 +6,10 @@ module CacheManager
 
     def client
       @client ||= begin
-        c=Dalli::Client.new('localhost:11211')
-        if c.stats.values.any?
-          c
-        else
+        if true #TODO: check if memcache is running? yaml?
           Faker.new
+        else
+          Dalli::Client.new('localhost:11211')
         end
       end
     end
