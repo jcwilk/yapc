@@ -1,13 +1,6 @@
 puts 'Annnnd...' if ENV['RACK_ENV'] == 'development'
-require 'rubygems'
-require 'bundler/setup'
-Bundler.require(:default)
-Bundler.require(:development) if ENV['RACK_ENV'] == 'development'
-require 'active_support/core_ext'
 
-$:.unshift ::File.join(::File.expand_path(::File.dirname(__FILE__)),'lib')
-require 'yapc'
-require 'cache_manager'
+require ::File.join(::File.expand_path(::File.dirname(__FILE__)),'environment')
 
 use Rack::Static, :urls => ['/javascripts','/stylesheets'], :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',

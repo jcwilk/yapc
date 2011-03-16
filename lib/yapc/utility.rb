@@ -14,13 +14,13 @@ module Yapc
         [status,{'Content-Type' => content_type},[content]]
       end
 
-      def haml(code)
-        if code.is_a?(Symbol)
-          cache.fetch(code) do
-            haml File.read(File.join(YAPC_ROOT,"views/#{code}.haml"))
+      def haml(action)
+        if action.is_a?(Symbol)
+          cache.fetch(action) do
+            haml File.read(File.join(YAPC_ROOT,"views/#{action}.haml"))
           end
         else
-          Haml::Engine.new(code).render
+          Haml::Engine.new(action).render
         end
       end
 

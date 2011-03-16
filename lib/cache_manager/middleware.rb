@@ -20,13 +20,28 @@ module CacheManager
       @app.call(env)
     end
 
+    #Quickie class to match -very few- but just enough memcache client methods
+    #Uses memory store instead of memcache
     class Faker
-      def method_missing(*args)
-        if block_given?
-          yield
-        else
-          nil
+      #TODO: Mutex that shit
+      cattr_accessor :cache
+
+      def initialize(ignored = nil)
+        self.class.cache ||= {}
+      end
+
+      def fetch(key)
+        val = self.class.cache[key]
+        if val.nil? && block_given?
+          val = yield
+          self.class.cache[key] = val
         end
+        val
+      end
+
+      def flush
+        self.class.cache = {}
+        nil
       end
     end
   end

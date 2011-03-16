@@ -11,10 +11,13 @@
               "/javascripts/time-queue.js",
               "/javascripts/yapc.js",
               function(){
-                Yapc.initializeChat('text-field','messages-start','#{Yapc::PUSH_APP_HOST}');
-                $('.no-behavior-content').hide();
-                $('.behavior-content').show();
-              });
+                $(document).ready(function(){
+                  Yapc.initializeChat('text-field','messages-start','#{Yapc::PUSH_APP_HOST}');
+                  $('.no-behavior-content').hide();
+                  $('.behavior-content').show()
+                })
+              })
+    %link{:href => '/stylesheets/yapc.css', :rel => 'stylesheet', :type => 'text/css'}
   %body
     .no-behavior-content
       Loading chat...
