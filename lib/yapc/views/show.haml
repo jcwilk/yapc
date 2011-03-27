@@ -14,7 +14,8 @@
                 $(document).ready(function(){
                   Yapc.initializeChat('text-field','messages-start','#{Yapc::PUSH_APP_HOST}');
                   $('.no-behavior-content').hide();
-                  $('.behavior-content').show()
+                  $('.behavior-content').show();
+                  $('#text-field').focus()
                 })
               })
     %link{:href => '/stylesheets/yapc.css', :rel => 'stylesheet', :type => 'text/css'}

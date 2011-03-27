@@ -43,6 +43,9 @@ module Yapc
     end
 
     def escape_with_links(text)
+      if text.size > 300
+        text = text[0..300]+'. . . tl;dr'
+      end
       clean = CGI.escapeHTML(text)
       clean.gsub(/(http[^ ]+)/,'<a href="\1" target="_blank">\1</a>')
     end
