@@ -18,11 +18,11 @@
                 })
               })
     %link{:href => '/stylesheets/yapc.css', :rel => 'stylesheet', :type => 'text/css'}
-  %body
+  %body{:style => 'background-color:#000'}
     .no-behavior-content
       Loading chat...
-    .behavior-content
-      %input{:type => 'text', :name => 'text', :id => 'text-field'}
-      .messages
-        #messages-start
-          ='-----------------------------------'
+    .behavior-content.container
+      %input{:type => 'text', :name => 'text', :id => 'text-field', :autocomplete => 'off'}
+      .messages-border
+        .messages
+          #messages-start

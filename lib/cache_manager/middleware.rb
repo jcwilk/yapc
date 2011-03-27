@@ -30,6 +30,8 @@ module CacheManager
       end
 
       def fetch(key)
+        return yield if ENV['RACK_ENV'] == 'development'
+        
         val = self.class.cache[key]
         if val.nil? && block_given?
           val = yield

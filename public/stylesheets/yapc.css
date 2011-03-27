@@ -1,3 +1,35 @@
 .behavior-content {
     display: none;
 }
+
+.container {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+}
+
+.messages-border {
+    border: 1px solid #FFF;
+    padding: 0px 4px
+}
+
+.messages {
+    background-color: #fff;
+    text-align: left
+}
+
+input {
+    width: 99%;
+    margin: auto
+}
+
+p {
+    margin: 5px
+}
+
+div#messages-start {
+    border-bottom: 1px solid #000;
+    width: 100%
+}
