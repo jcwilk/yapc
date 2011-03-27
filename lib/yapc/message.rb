@@ -23,25 +23,27 @@ module Yapc
     protected
 
     def send_data(channel, data)
-      #Pusher['messages'].trigger channel, data
       RestClient.post "http://#{PUSH_APP_HOST}/m/#{channel}.json", data.to_json, :content_type => :json, :accept => :json
     end
 
-    def message_data(extra = {})
-      {
-        :text => escape_with_links(params[:text]),
-        :id_hash => id_hash,
-        :name => wikified_name,
-        :sequence => params[:sequence]
-      }.merge(extra)
+    #{"data"=>{"0"=>{"text"=>"t", "sequence"=>"0"}}}
+    def message_data
+      params[:data].values.map do |msg|
+        {
+          :text => escape_with_links(msg[:text]),
+          :id_hash => id_hash,
+          :name => wikified_name,
+          :sequence => msg[:sequence]
+        }
+      end
     end
 
     def wikified_name
       "<a href='http://en.wikipedia.org/wiki/Special:Search/#{session[:name].underscore}' target='_blank'>#{session[:name]}</a>"
     end
 
-    def escape_with_links(string)
-      clean = CGI.escapeHTML(params[:text])
+    def escape_with_links(text)
+      clean = CGI.escapeHTML(text)
       clean.gsub(/(http[^ ]+)/,'<a href="\1" target="_blank">\1</a>')
     end
 

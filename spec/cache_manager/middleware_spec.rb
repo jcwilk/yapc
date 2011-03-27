@@ -1,4 +1,4 @@
-require ::File.join(::File.expand_path(::File.dirname(__FILE__)),'..','..','environment')
+require File.join(File.dirname(__FILE__),'../spec_helper.rb')
 
 describe CacheManager::Middleware do
   describe CacheManager::Middleware::Faker do

@@ -9,4 +9,5 @@ gem "dalli"
 group "development" do
   gem "mongrel"
   gem "jasmine"
+  gem "ZenTest"
 end

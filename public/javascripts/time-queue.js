@@ -1,24 +1,27 @@
 var TimeQueue = (function(){
     function queueFactory(){
-        var queue = [];
+        var self = {},
+            queue = [];
 
-        function push(newVal){
+        self.push = function(newVal){
             queue.push(newVal);
             return this
-        }
+        };
 
-        function dump(){
+        self.dump = function(){
             return queue.slice()
-        }
+        };
 
-        function reset(){
+        self.reset = function(){
             queue.splice(0,queue.length);
             return this
-        }
+        };
 
-        return {push: push, //chains
-                dump: dump,
-                reset: reset}
+        self.removeFromHead = function(els){
+            queue.splice(0,els.length)
+        };
+
+        return self
     }
 
     return {create: queueFactory}

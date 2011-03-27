@@ -17,9 +17,9 @@ Yapc.messageUpdateHandlerFactory = function(env){
         msg.id = 'msg-'+msg.id_hash;
         if($('#'+msg.id)[0]){
             var cssTarget = '#'+msg.id;
-            env.output.displayInsteadOf(msg,cssTarget)
+            env.view.displayInsteadOf(msg,cssTarget)
         } else {
-            env.output.displayBefore(msg)
+            env.view.displayBefore(msg)
         }
     }
 
@@ -41,7 +41,7 @@ Yapc.messageUpdateHandlerFactory = function(env){
 
 Yapc.messageCreateHandlerFactory = function(env){
     function handleMessage(msg){
-        env.output.displayAfter(msg)
+        env.view.displayAfter(msg)
     }
 
     function notify(){
@@ -62,7 +62,7 @@ Yapc.messageCreateHandlerFactory = function(env){
     return consumeData
 };
 
-Yapc.outputterFactory = function(env){
+Yapc.viewFactory = function(env){
     var self = {};
 
     function formatMessage(data){
@@ -74,6 +74,16 @@ Yapc.outputterFactory = function(env){
         out+=">"+data.name+': '+data.text+"</p>";
         return out
     }
+
+    self.field = $('#'+env.inputId);
+
+    self.getInput = function(){
+        return self.field.val()
+    };
+
+    self.clearInput = function(){
+        self.field.val('')
+    };
 
     self.displayAfter = function(data){
         $(formatMessage(data)).insertAfter('#'+env.startId)
@@ -87,37 +97,71 @@ Yapc.outputterFactory = function(env){
         $(cssTarget).replaceWith(formatMessage(msg))
     };
 
-    self.field = $('#'+env.inputId)
-
     return self
 };
 
 Yapc.senderFactory = function(env, method, sequential){
-    function sendData(data){
-        $.ajax({
-            type: method,
-            url: '/m',
-            data: data
-        })
+    var queue = TimeQueue.create();
+    var deliveryWaiting = false;
+    var deliveryInProgress = false;
+
+    function markForDelivery(){
+        var data = queue.dump();
+        if(!data.length){return}
+
+        if(deliveryInProgress){
+            deliveryWaiting = true
+        } else {
+            deliveryWaiting = false;
+            deliveryInProgress = true;
+            $.ajax({
+                type: method,
+                url: '/m',
+                data: {data: data}, //data!
+                complete: function(xhr,status){
+                    if(status == 'success'){
+                        deliveryInProgress = false;
+                        queue.removeFromHead(data);
+                        if(deliveryWaiting) markForDelivery()
+                    } else { //failure, try again in 5
+                        setTimeout(function(){
+                            deliveryInProgress = false;
+                            markForDelivery()
+                        },5000)
+                    }
+                }
+            }) //end ajax
+        }
     }
 
-    function fieldData(){ return {text: env.output.field.val()} }
+    function queueData(data){
+        queue.push(data);
+        markForDelivery()
+    }
 
-    if(sequential){
+    function fieldData(){
+        return {text: env.view.getInput()}
+    }
+
+    var sender;
+    if(sequential){ //numbers data updates, skips when it doesn't change
         var sequence = 0,
             lastData;
-        return function(){
+        sender = function(){
             var data = fieldData();
             if(data != lastData){
                 data.sequence = sequence;
                 sequence++;
-                sendData(data)
+                queueData(data)
             }
         }
-    } else {
-        return function(){ sendData(fieldData()) }
+    } else { //never skips data, does not number the data
+        sender = function(){ queueData(fieldData()) }
     }
-
+    sender._debug = {queue: queue,
+                     markForDelivery: markForDelivery,
+                     queueData: queueData};
+    return sender
 };
 
 Yapc.initializeChat = function(inputId, startId, hostname){
@@ -127,23 +171,30 @@ Yapc.initializeChat = function(inputId, startId, hostname){
         hostname: hostname
     };
 
+    //These send data to the server
     env.sendMessage = Yapc.senderFactory(env,'POST',false);
     env.syncActiveText = Yapc.senderFactory(env,'PUT',true);
-    env.output = Yapc.outputterFactory(env);
+
+    //This abstracts the dom interactions
+    env.view = Yapc.viewFactory(env);
+
+    //These handle incoming data from the push library
     env.messageUpdateHandler = Yapc.messageUpdateHandlerFactory(env);
     env.messageCreateHandler = Yapc.messageCreateHandlerFactory(env);
 
-    env.output.field.bind({
+    //This links up the senders with key events
+    //TODO: encapsulate most of this into the view object, not a huge priority
+    env.view.field.bind({
         keyup: function(e){
             if(e.keyCode == '13'){
                 env.sendMessage();
-                env.output.field.val('')
+                env.view.clearInput()
             }
             env.syncActiveText()
         }
     });
 
-    //TODO: Make these non-singleton-friendly
+    //TODO: Make these support Yapc not being singleton
     NodePush.setHost(hostname);
     NodePush.bind('message-update', env.messageUpdateHandler);
     NodePush.bind('message-create', env.messageCreateHandler);
