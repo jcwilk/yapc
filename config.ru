@@ -2,6 +2,7 @@ puts 'Annnnd...' if ENV['RACK_ENV'] == 'development'
 
 require ::File.join(::File.expand_path(::File.dirname(__FILE__)),'environment')
 
+use Rack::SslEnforcer unless ENV['RACK_ENV'] == 'development'
 use Rack::Static, :urls => ['/javascripts','/stylesheets'], :root => "public"
 use Rack::Session::Cookie, :key => 'rack.session',
                                :domain => '.yapc.duostack.net',

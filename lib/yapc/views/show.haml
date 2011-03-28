@@ -12,7 +12,7 @@
               "/javascripts/yapc.js",
               function(){
                 $(document).ready(function(){
-                  Yapc.initializeChat('text-field','messages-start','#{Yapc::PUSH_APP_HOST}');
+                  Yapc.initializeChat('text-field','messages-start','http#{'s' unless ENV['RACK_ENV'] == 'development'}://#{Yapc::PUSH_APP_HOST}');
                   $('.no-behavior-content').hide();
                   $('.behavior-content').show();
                   $('#text-field').focus()

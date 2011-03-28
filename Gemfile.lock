@@ -22,6 +22,7 @@ GEM
       daemons (~> 1.0.10)
       gem_plugin (~> 0.2.3)
     rack (1.2.1)
+    rack-ssl-enforcer (0.2.2)
     rake (0.8.7)
     rest-client (1.6.1)
       mime-types (>= 1.16)
@@ -49,4 +50,5 @@ DEPENDENCIES
   jasmine
   mongrel
   rack
+  rack-ssl-enforcer
   rest-client

@@ -164,11 +164,11 @@ Yapc.senderFactory = function(env, method, sequential){
     return sender
 };
 
-Yapc.initializeChat = function(inputId, startId, hostname){
+Yapc.initializeChat = function(inputId, startId, pushAddress){
     var env = {
         inputId: inputId,
         startId: startId,
-        hostname: hostname
+        pushAddress: pushAddress
     };
 
     //These send data to the server
@@ -195,7 +195,7 @@ Yapc.initializeChat = function(inputId, startId, hostname){
     });
 
     //TODO: Make these support Yapc not being singleton
-    NodePush.setHost(hostname);
+    NodePush.setHost(env.pushAddress);
     NodePush.bind('message-update', env.messageUpdateHandler);
     NodePush.bind('message-create', env.messageCreateHandler);
 
